@@ -5,11 +5,11 @@ base_local_planner: teb_local_planner/TebLocalPlannerROS
 TebLocalPlannerROS:
   # Trajectory
   teb_autosize: true                       # Enable the automatic resizing of the trajectory during optimization (based on the temporal resolution of the trajectory, recommended)
-  dt_ref: 0.3                              # Temporal resolution of the planned trajectory (usually it is set to the magnitude of the 1/control_rate)
+  dt_ref: 0.4                              # Temporal resolution of the planned trajectory (usually it is set to the magnitude of the 1/control_rate)
   dt_hysteresis: 0.1                       # Hysteresis that is utilized for automatic resizing depending on the current temporal resolution (dt): usually 10% of dt_ref
   global_plan_overwrite_orientation: false # Some global planners are not considering the orientation at local subgoals between start and global goal, therefore determine it automatically
   allow_init_with_backwards_motion: false  # If true, the underlying trajectories might be initialized with backwards motions in case the goal is behind the start within the local costmap (this is only recommended if the robot is equipped with rear sensors)
-  max_global_plan_lookahead_dist: 3.0      # Specify maximum length (cumulative Euclidean distances) of the subset of the global plan taken into account for optimization [if 0 or negative: disabled; the length is also bounded by the local costmap size]
+  max_global_plan_lookahead_dist: 10.0      # Specify maximum length (cumulative Euclidean distances) of the subset of the global plan taken into account for optimization [if 0 or negative: disabled; the length is also bounded by the local costmap size]
   force_reinit_new_goal_dist: 1.0          # Force the planner to reinitialize the trajectory if a previous goal is updated with a seperation of more than the specified value in meters (skip hot-starting)
   feasibility_check_no_poses: 5            # Specify up to which pose on the predicted plan the feasibility should be checked each sampling interval
   global_plan_viapoint_sep: -0.1           # Min. separation between each two consecutive via-points extracted from the global plan [if negative: disabled]
@@ -18,13 +18,13 @@ TebLocalPlannerROS:
   publish_feedback: false                  # Publish planner feedback containing the full trajectory and a list of active obstacles (should be enabled only for evaluation or debugging purposes)
 
   # Robot
-  max_vel_x: 0.8                           # Maximum translational velocity of the robot
-  max_vel_x_backwards: 0.2                 # Maximum translational velocity of the robot for driving backwards
+  max_vel_x: 0.1                           # Maximum translational velocity of the robot
+  max_vel_x_backwards: 0.1                 # Maximum translational velocity of the robot for driving backwards
   max_vel_y: 0.0                           # Maximum strafing velocity of the robot (should be zero for non-holonomic robots!)
-  max_vel_theta: 1.0                       # Maximum angular velocity of the robot
-  acc_lim_x: 1.5                           # Maximum translational acceleration of the robot
+  max_vel_theta: 0.2                       # Maximum angular velocity of the robot
+  acc_lim_x: 0.5                           # Maximum translational acceleration of the robot
   acc_lim_y: 0.0                           # Maximum strafing acceleration of the robot
-  acc_lim_theta: 2.0                       # Maximum angular acceleration of the robot
+  acc_lim_theta: 0.1                       # Maximum angular acceleration of the robot
   min_turning_radius: 0.0                  # Minimum turning radius of a carlike robot (diff-drive robot: zero)
   wheelbase: 1.0                           # The distance between the drive shaft and steering axle (only required for a carlike robot with 'cmd_angle_instead_rotvel' enabled); The value might be negative for back-wheeled robots!
   cmd_angle_instead_rotvel: false          # Substitute the rotational velocity in the commanded velocity message by the corresponding steering angle (check 'axles_distance')
@@ -39,8 +39,8 @@ TebLocalPlannerROS:
   free_goal_vel: false                     # Allow the robot's velocity to be nonzero for planning purposes (the robot can arrive at the goal with max speed)
 
   # Obstacles
-  min_obstacle_dist: 0.4                   # Minimum desired separation from obstacles
-  inflation_dist: 0.1                      # Buffer zone around obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect)
+  min_obstacle_dist: 1.0                   # Minimum desired separation from obstacles
+  inflation_dist: 0.4                      # Buffer zone around obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect)
   dynamic_obstacle_inflation_dist: 0.6     # Buffer zone around predicted locations of dynamic obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect)
   include_dynamic_obstacles: false         # Specify whether the movement of dynamic obstacles should be predicted by a constant velocity model (this also changes the homotopy class search). If false, all obstacles are considered to be static.
   include_costmap_obstacles: true          # Specify whether the obstacles in the costmap should be taken into account directly (this is necessary if no seperate clustering and detection is implemented)
@@ -64,7 +64,7 @@ TebLocalPlannerROS:
   weight_max_vel_theta: 1.0                # Optimization weight for satisfying the maximum allowed angular velocity
   weight_acc_lim_x: 1.0                    # Optimization weight for satisfying the maximum allowed translational acceleration
   weight_acc_lim_y: 1.0                    # Optimization weight for satisfying the maximum allowed strafing acceleration (in use only for holonomic robots)
-  weight_acc_lim_theta: 1.0                # Optimization weight for satisfying the maximum allowed angular acceleration
+  weight_acc_lim_theta: 5.0                # Optimization weight for satisfying the maximum allowed angular acceleration
   weight_kinematics_nh: 1000.0             # Optimization weight for satisfying the non-holonomic kinematics
   weight_kinematics_forward_drive: 1.0     # Optimization weight for forcing the robot to choose only forward directions (positive transl. velocities, only diffdrive robot)
   weight_kinematics_turning_radius: 1.0    # Optimization weight for enforcing a minimum turning radius (carlike robots)
